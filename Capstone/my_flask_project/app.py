@@ -1,115 +1,89 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import requests
 
+
 app = Flask(__name__)
+api_key = 'a4EChWUjEwl5EKCrweIX0jakxf3Tttxw9gT6elgd'
 
-def fetch_states(api_key):
-    # NPS API endpoint to get a list of parks/states
-    url = "https://developer.nps.gov/api/v1/parks"
-
-    #Make request to NPS API to get the list of parks
+def fetch_activities():
+    url = "https://developer.nps.gov/api/v1/activities"
     headers = {"Accept": "application/json"}
-    params = {"api_key": api_key, "limit": 55}
+    params = {"api_key": api_key}
     response = requests.get(url, headers=headers, params=params)
+    if response.status_code == 200:
+        return response.json().get('data', [])
+    else:
+        return []
 
-    # API response
+def fetch_states():
+    url = "https://developer.nps.gov/api/v1/parks"
+    headers = {"Accept": "application/json"}
+    params = {"api_key": api_key, "limit": 100}  
+    response = requests.get(url, headers=headers, params=params)
     if response.status_code == 200:
         parks = response.json().get('data', [])
-        # Extract unique states from the list of parks
         states = list(set(state for park in parks for state in park.get('states', '').split(',')))
-        # Alphabetizes the list of states
         states = sorted(states)
+        
+        # Manually add territories/islands
+        territories = ['AS', 'GU', 'MP', 'PR', 'VI', 'DC'] 
+        for territory in territories:
+            if territory not in states:
+                states.append(territory)
+        states = sorted(states) 
+        
         return states
     else:
         return []
 
-def fetch_activities(api_key):
-    # NPS API endpoint to get a list of activities
-    url = "https://developer.nps.gov/api/v1/activities/parks"
 
-    # Make request to NPS API to get the list of activities
-    headers = {"Accept": "application/json"}
-    params = {"api_key": api_key}
-    response = requests.get(url, headers=headers, params=params)
-
-    # Process API response
-    if response.status_code == 200:
-        activities = response.json().get('data', [])
-        return activities
-    else:
-        return []
 
 @app.route('/')
 def index():
-    # Karina API Key
-    api_key = 'a4EChWUjEwl5EKCrweIX0jakxf3Tttxw9gT6elgd'
+    activities = fetch_activities()
+    states = fetch_states()
+    return render_template('index.html', activities=activities, states=states)
 
-    # Fetch and pass available states and activities to the template
-    states = fetch_states(api_key)
-    activities = fetch_activities(api_key)
-    return render_template('index.html', states=states, activities=activities)
+@app.route('/search_results', methods=['GET'])
+def search_results():
+    selected_state = request.args.get('state')
+    selected_activity = request.args.get('activity')
 
-@app.route('/search')
-def search():
-    # Karina API Key
-    api_key = 'a4EChWUjEwl5EKCrweIX0jakxf3Tttxw9gT6elgd'
-
-    # Get selected state and activity from the request parameters
-    selected_state = request.args.get('state', '')
-    selected_activity = request.args.get('activity', '')
-
-    # Fetch parks based on the selected state and activity
-    url = "https://developer.nps.gov/api/v1/parks"
-    headers = {"Accept": "application/json"}
-    params = {"api_key": api_key, "stateCode": selected_state.upper(), "activity": selected_activity}
-    response = requests.get(url, headers=headers, params=params)
-
-    # Process API response
-    if response.status_code == 200:
-        parks = response.json().get('data', [])
-        return render_template('search_results.html', state_name=selected_state, activity_name=selected_activity, parks=parks)
+    if selected_state:
+        return redirect(url_for('state_parks', state_code=selected_state))
+    elif selected_activity:
+        return redirect(url_for('activity_parks', activity_id=selected_activity))
     else:
-        # Handle error, for example, redirect to an error page
-        return render_template('error.html', message='Failed to fetch parks for the specified state and activity')
+        return render_template('error.html', message='Please select either a state or an activity.')
 
 @app.route('/state_parks/<state_code>')
 def state_parks(state_code):
-    # Replace 'YOUR_API_KEY' with your actual NPS API key
-    api_key = 'a4EChWUjEwl5EKCrweIX0jakxf3Tttxw9gT6elgd'
-
-    # NPS API endpoint to get parks for the specified state
     url = "https://developer.nps.gov/api/v1/parks"
     headers = {"Accept": "application/json"}
-    params = {"api_key": api_key, "stateCode": state_code.upper()}  # Convert state code to uppercase
+    params = {"api_key": api_key, "stateCode": state_code}
     response = requests.get(url, headers=headers, params=params)
+    parks = []
 
-    # Process API response
     if response.status_code == 200:
         parks = response.json().get('data', [])
-        return render_template('state_parks.html', state_name=state_code, parks=parks)
-    else:
-        # Handle error, for example, redirect to an error page
-        return render_template('error.html', message='Failed to fetch parks for the specified state')
+    return render_template('state_parks.html', state=state_code, parks=parks)
 
-@app.route('/activity_parks/<activity_name>')
-def activity_parks(activity_name):
-    # Replace 'YOUR_API_KEY' with your actual NPS API key
-    api_key = 'a4EChWUjEwl5EKCrweIX0jakxf3Tttxw9gT6elgd'
-
-    # NPS API endpoint to get parks for the specified activity
+@app.route('/activity_parks/<activity_id>')
+def activity_parks(activity_id):
     url = "https://developer.nps.gov/api/v1/activities/parks"
     headers = {"Accept": "application/json"}
-    params = {"api_key": api_key, "activity": activity_name}
+    params = {"api_key": api_key, "id": activity_id}
     response = requests.get(url, headers=headers, params=params)
+    parks = []
 
-    # Process API response
     if response.status_code == 200:
-        parks = response.json().get('data', [])
-        return render_template('activity_parks.html', activity_name=activity_name, parks=parks)
-    else:
-        # Handle error, for example, redirect to an error page
-        return render_template('error.html', message='Failed to fetch parks for the specified activity')
+        activities_data = response.json().get('data', [])
+        for activity in activities_data:
+            if activity['id'] == activity_id:
+                parks.extend(activity.get('parks', []))
+                break
+
+    return render_template('activity_parks.html', parks=parks)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(debug=True, host='0.0.0.0', port=5001)
