@@ -2,62 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parks in {{ state_name }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-        }
-
-        p {
-            color: #888;
-        }
-    </style>
+    <title>Parks in Selected State</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Parks in {{ state_name }}</h1>
-
-        {% if parks %}
-            <ul>
-                {% for park in parks %}
-                    <li>{{ park['name'] }} - {{ park['designation'] }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No parks found for the selected state.</p>
-        {% endif %}
-    </div>
+    <h1>Parks in {{ state }}</h1>
+    {% if parks %}
+        <ul>
+        {% for park in parks %}
+            <li>{{ park.fullName }} - {{ park.states }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No parks found in this state.</p>
+    {% endif %}
 </body>
 </html>
+
 
