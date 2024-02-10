@@ -1,3 +1,9 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     margin: 20px;
@@ -6,6 +12,11 @@ body {
 
 h1 {
     color: #3498db;
+    text-align: center; /* Added from the second set */
+}
+
+h2 {
+    margin-top: 20px;
 }
 
 ul {
@@ -23,6 +34,52 @@ a {
     font-weight: bold;
 }
 
+.park {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.park h3 {
+    margin-top: 0;
+}
+
+.park p {
+    margin-bottom: 5px;
+}
+
+
 a:hover {
     color: #e74c3c;
 }
+
+#map {
+    margin: 20px auto;
+    width: 80%;
+}
+
+.form-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-container input[type="text"] {
+    padding: 10px;
+    margin: 5px;
+    width: 200px;
+}
+
+.form-container button {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background-color: #45a049;
+}
+
+
