@@ -2,37 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NPS Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-   
-  <!-- Additional styles can be added here -->
-
 </head>
 <body>
-    <div class="container">
-        <h1>NPS Home</h1>
+    <h1>NPS Home</h1>
+    <form action="{{ url_for('search_results') }}" method="get">
+        <label for="state">Select a State:</label>
+        <select name="state" id="state">
+            <option value="" selected disabled>Select a state</option>
+            {% for state in states %}
+                <option value="{{ state }}">{{ state }}</option>
+            {% endfor %}
+        </select>
 
-        <form action="{{ url_for('search') }}" method="get">
-            <label for="state">Select a State:</label>
-            <select name="state" id="state">
-                <option value="" selected disabled>Select a state</option>
-                {% for state in states %}
-                    <option value="{{ state }}">{{ state }}</option>
-                {% endfor %}
-            </select>
+        <label for="activity">Select an Activity:</label>
+        <select name="activity" id="activity">
+            <option value="" selected disabled>Select an activity</option>
+            {% for activity in activities %}
+                <option value="{{ activity.id }}">{{ activity.name }}</option>
+            {% endfor %}
+        </select>
 
-            <label for="activity">Select an Activity:</label>
-            <select name="activity" id="activity">
-                <option value="" selected disabled>Select an activity</option>
-                {% for activity in activities %}
-                    <option value="{{ activity['name'] }}">{{ activity['name'] }}</option>
-                {% endfor %}
-            </select>
-
-            <button type="submit">Search</button>
-        </form>
-    </div>
+        <button type="submit">Search</button>
+    </form>
 </body>
 </html>
