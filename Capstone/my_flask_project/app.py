@@ -25,7 +25,6 @@ def fetch_states():
         states = list(set(state for park in parks for state in park.get('states', '').split(',')))
         states = sorted(states)
         
-        # Manually add territories/islands
         territories = ['AS', 'GU', 'MP', 'PR', 'VI', 'DC'] 
         for territory in territories:
             if territory not in states:
@@ -84,6 +83,16 @@ def activity_parks(activity_id):
                 break
 
     return render_template('activity_parks.html', parks=parks)
+
+@app.route('/park_details/<parkCode>')
+def park_details(parkCode):
+    url = f"https://developer.nps.gov/api/v1/parks?parkCode={parkCode}&api_key={api_key}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        park = response.json().get('data', [])[0]  # Assuming the first item is the park we want
+        return render_template('park_details.html', park=park)
+    else:
+        return render_template('error.html', message='Could not fetch park details.')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
