@@ -12,7 +12,7 @@ body {
 
 h1 {
     color: #3498db;
-    text-align: center; /* Added from the second set */
+    text-align: center;
 }
 
 h2 {
@@ -53,10 +53,6 @@ a:hover {
     color: #e74c3c;
 }
 
-#map {
-    margin: 20px auto;
-    width: 80%;
-}
 
 .form-container {
     text-align: center;
@@ -81,5 +77,45 @@ a:hover {
 .form-container button:hover {
     background-color: #45a049;
 }
+
+/* error pg */
+
+.error-container {
+    margin-top: 50px;
+    text-align: center;
+}
+
+h1 {
+    color: #e74c3c;
+}
+
+.error-container p {
+    color: #333; /* Adjust the color as needed */
+}
+
+a.back-to-home {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+a.back-to-home:hover {
+    background-color: #2980b9;
+}
+
+.image-container {
+    width: 100%; /* Adjust the width as desired, or use max-width for responsiveness */
+    overflow: hidden; /* Ensures nothing extends outside the container */
+}
+
+.image-container img {
+    width: 100%; /* Makes the image fill the container */
+    height: auto; /* Maintains aspect ratio */
+}
+
 
 
