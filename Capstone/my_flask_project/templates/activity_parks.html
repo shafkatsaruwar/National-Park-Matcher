@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <meta charset="UTF-8">
     <title>Parks Offering Selected Activity</title>
 </head>
 <body>
     <h1>Parks Offering Selected Activity</h1>
+    <a href="{{ url_for('index') }}">Back to Search</a>
     {% if parks %}
         <ul>
         {% for park in parks %}
-            <li>{{ park.fullName }} - {{ park.states }}</li>
+        <li><a href="{{ url_for('park_details', parkCode=park.parkCode) }}">{{ park.fullName }}</a> - {{ park.states }}</li>
         {% endfor %}
         </ul>
     {% else %}
