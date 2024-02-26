@@ -3,16 +3,16 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <meta charset="UTF-8">
-    <title>Parks Offering Selected Activity</title>
+    <title>Parks Offering {{ activity_name }}</title>
 </head>
 <body>
-    <h1>Parks Offering Selected Activity</h1>
+    <h1>Parks Offering {{ activity_name }}</h1>
     <a href="{{ url_for('index') }}">Back to Search</a>
     {% if parks %}
         <ul>
-        {% for park in parks %}
-        <li><a href="{{ url_for('park_details', parkCode=park.parkCode) }}">{{ park.fullName }}</a> - {{ park.states }}</li>
-        {% endfor %}
+            {% for park in parks %}
+            <li><a href="{{ url_for('park_details', parkCode=park.parkCode) }}">{{ park.fullName }}</a> - {{ park.states }}</li>
+            {% endfor %}
         </ul>
     {% else %}
         <p>No parks found for this activity.</p>
