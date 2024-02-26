@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import requests
 
-
 app = Flask(__name__)
 api_key = 'a4EChWUjEwl5EKCrweIX0jakxf3Tttxw9gT6elgd'
 
@@ -18,7 +17,7 @@ def fetch_activities():
 def fetch_states():
     url = "https://developer.nps.gov/api/v1/parks"
     headers = {"Accept": "application/json"}
-    params = {"api_key": api_key, "limit": 100}  
+    params = {"api_key": api_key, "limit": 100}
     response = requests.get(url, headers=headers, params=params)
     if response.status_code == 200:
         parks = response.json().get('data', [])
@@ -35,8 +34,6 @@ def fetch_states():
     else:
         return []
 
-
-
 @app.route('/')
 def index():
     activities = fetch_activities()
@@ -51,7 +48,9 @@ def search_results():
     if selected_state:
         return redirect(url_for('state_parks', state_code=selected_state))
     elif selected_activity:
-        return redirect(url_for('activity_parks', activity_id=selected_activity))
+        # Fetch the activity name for displaying in the title
+        activity_name = next((activity['name'] for activity in fetch_activities() if activity['id'] == selected_activity), "Selected Activity")
+        return redirect(url_for('activity_parks', activity_id=selected_activity, activity_name=activity_name))
     else:
         return render_template('error.html', message='Please select either a state or an activity.')
 
@@ -67,8 +66,8 @@ def state_parks(state_code):
         parks = response.json().get('data', [])
     return render_template('state_parks.html', state=state_code, parks=parks)
 
-@app.route('/activity_parks/<activity_id>')
-def activity_parks(activity_id):
+@app.route('/activity_parks/<activity_id>/<activity_name>')
+def activity_parks(activity_id, activity_name):
     url = "https://developer.nps.gov/api/v1/activities/parks"
     headers = {"Accept": "application/json"}
     params = {"api_key": api_key, "id": activity_id}
@@ -82,14 +81,14 @@ def activity_parks(activity_id):
                 parks.extend(activity.get('parks', []))
                 break
 
-    return render_template('activity_parks.html', parks=parks)
+    return render_template('activity_parks.html', activity_name=activity_name, parks=parks)
 
 @app.route('/park_details/<parkCode>')
 def park_details(parkCode):
     url = f"https://developer.nps.gov/api/v1/parks?parkCode={parkCode}&api_key={api_key}"
     response = requests.get(url)
     if response.status_code == 200:
-        park = response.json().get('data', [])[0]  # Assuming the first item is the park we want
+        park = response.json().get('data', [])[0]
         return render_template('park_details.html', park=park)
     else:
         return render_template('error.html', message='Could not fetch park details.')
