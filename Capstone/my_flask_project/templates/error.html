@@ -1,24 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <a href="{{ url_for('index') }}" class="back-to-home">Back to Home</a>
     <meta charset="UTF-8">
-    <title>{{ park.fullName }}</title>
+    <title>Error</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>{{ park.fullName }}</h1>
-    <p>{{ park.description }}</p>
-    <h2>Directions</h2>
-    <p>{{ park.directionsInfo }}</p>
-    <a href="{{ park.directionsUrl }}">More Directions</a>
-    <!-- Displaying images, if available -->
-    {% if park.images %}
-        {% for image in park.images %}
-        <div class="image-container">
-            <img src="{{ image.url }}" alt="{{ image.altText }}">
-        {% endfor %}
-    {% endif %}
-    <a href="{{ url_for('index') }}">Back to Search</a>
+    <div class="error-container">
+        <h1>Oops! Something went wrong.</h1>
+        <p>{{ message }}</p>
+        
+    </div>
 </body>
 </html>
-
