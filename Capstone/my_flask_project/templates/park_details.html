@@ -10,7 +10,7 @@
     <p>{{ park.description }}</p>
     <h2>Directions</h2>
     <p>{{ park.directionsInfo }}</p>
-    <a href="{{ park.directionsUrl }}">More Directions</a>
+    <a href="https://www.google.com/maps/dir/?api=1&origin={{ user_location|urlencode }}&destination={{ park.latitude }},{{ park.longitude }}" target="_blank">More Directions</a>
     <!-- Displaying images, if available -->
     {% if park.images %}
         {% for image in park.images %}
