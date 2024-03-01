@@ -11,7 +11,7 @@
     {% if parks %}
         <ul>
             {% for park in parks %}
-            <li><a href="{{ url_for('park_details', parkCode=park.parkCode) }}">{{ park.fullName }}</a> - {{ park.states }}</li>
+            <li><a href="{{ url_for('park_details', parkCode=park.parkCode, user_location=user_location) }}">{{ park.fullName }}</a>
             {% endfor %}
         </ul>
     {% else %}
