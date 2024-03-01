@@ -23,6 +23,9 @@
                 <option value="{{ activity.id }}">{{ activity.name }}</option>
             {% endfor %}
         </select>
+		
+		<label for="user_location">Enter Your Location:</label>
+		<input type="text" id="user_location" name="user_location" placeholder="Your starting location">
 
         <button type="submit">Search</button>
     </form>
